@@ -9,7 +9,6 @@ from django.http import JsonResponse
 class TripHandler(APIView):
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
         userid = self.request.user.id
         request.data['user'] = userid
         serializer = MakeTripSerializer(data=request.data)
