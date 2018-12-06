@@ -109,3 +109,13 @@ def validation(request, token):
     user.is_active = True
     user.save()
     return HttpResponse("ایمیل با موفقیت تایید شد")
+
+
+class ProfilePage(APIView):
+
+    def get(self, request):
+        userid = self.request.user.id
+        request.data['user'] = userid
+        person = Person.objects.get(user__id=userid)
+        serializer = PersonSerializer(person,context={"userid":userid})
+        return JsonResponse(serializer.data)
