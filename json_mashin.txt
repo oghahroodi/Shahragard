@@ -1,42 +1,42 @@
 {
 
 '1':{
-	'car':"ÑÇíÏ",
+	'car':"Ù¾Ø±Ø§ÛŒØ¯",
 	'max_num_of_passngr':"4"
 },
 
 '2':{
-	'car':"ÊíÈÇ",
+	'car':"ØªÛŒØ¨Ø§",
 	'max_num_of_passngr':"4"
 },
 
 '3':{
-	'car':"ÊäÏÑ ??",
+	'car':"ØªÙ†Ø¯Ø±90",
 	'max_num_of_passngr':"4"
 },
 
 '4':{
-	'car':"ÓãäÏ",
+	'car':"Ø³Ù…Ù†Ø¯",
 	'max_num_of_passngr':"4"
 },
 
 '5':{
-	'car':"æ ???",
+	'car':"Ù¾Ú˜Ùˆ206",
 	'max_num_of_passngr':"4"
 },
 
 '6':{
-	'car':"æ ???",
+	'car':"Ù¾Ú˜Ùˆ405",
 	'max_num_of_passngr':"4"
 },
 
 '7':{
-	'car':"æ ÇÑÓ",
+	'car':"Ù¾Ú˜Ùˆ Ù¾Ø§Ø±Ø³",
 	'max_num_of_passngr':"4"
 },
 
 '8':{
-	'car':"á˜ÓæÓ",
+	'car':"Ù„Ú©Ø³ÙˆØ³",
 	'max_num_of_passngr':"4"
 }
 
