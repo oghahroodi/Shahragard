@@ -1,5 +1,10 @@
 from django.db import models
 from user.models import User
+from .models import Trip, RequestTrip
+
+
+admin.site.register(Trip)
+admin.site.register(RequestTrip)
 
 
 class Trip(models.Model):
@@ -8,4 +13,11 @@ class Trip(models.Model):
     origin = models.CharField(max_length=50, null=False)
     destination = models.CharField(max_length=50, null=False)
     cost = models.CharField(max_length=50, null=False)
+    number_of_passengers = models.IntegerField(null=False)
+
+
+class RequestTrip(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
+    accept = models.BooleanField(default=False)
     number_of_passengers = models.IntegerField(null=False)
