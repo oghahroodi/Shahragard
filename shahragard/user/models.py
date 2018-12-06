@@ -8,7 +8,8 @@ class Person(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
     name = models.CharField(max_length=100, null=False)
     phone_regex = RegexValidator(
-        regex=r'^\+?1?\d{10,11}$', message="شماره تلفن باید عدد و بین 10 تا 11 رقم باشد.")
+        regex=r'^\+?1?\d{10,11}$',
+        message="شماره تلفن باید عدد و بین 10 تا 11 رقم باشد.")
     phone_number = models.CharField(
         validators=[phone_regex], max_length=11, unique=True, null=False)
     validation = models.BooleanField(default=False)

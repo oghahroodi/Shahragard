@@ -21,7 +21,8 @@ def email(receiver, random_token):
 
 while(True):
     connRedis = redis.StrictRedis(
-        host='localhost', port=6379, password='', charset="utf-8", decode_responses=True)
+        host='localhost', port=6379, password='', charset="utf-8",
+        decode_responses=True)
     mail = connRedis.blpop('email')
     mail = json.loads(mail[1])
     email(mail['receiver'], mail['token'])
