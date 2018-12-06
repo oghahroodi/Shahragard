@@ -1,0 +1,44 @@
+{
+
+'1':{
+	'car':"ÑÇíÏ",
+	'max_num_of_passngr':"4"
+},
+
+'2':{
+	'car':"ÊíÈÇ",
+	'max_num_of_passngr':"4"
+},
+
+'3':{
+	'car':"ÊäÏÑ ??",
+	'max_num_of_passngr':"4"
+},
+
+'4':{
+	'car':"ÓãäÏ",
+	'max_num_of_passngr':"4"
+},
+
+'5':{
+	'car':"æ ???",
+	'max_num_of_passngr':"4"
+},
+
+'6':{
+	'car':"æ ???",
+	'max_num_of_passngr':"4"
+},
+
+'7':{
+	'car':"æ ÇÑÓ",
+	'max_num_of_passngr':"4"
+},
+
+'8':{
+	'car':"á˜ÓæÓ",
+	'max_num_of_passngr':"4"
+}
+
+
+}
