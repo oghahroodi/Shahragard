@@ -1,4 +1,8 @@
+import binascii
 import json
+import redis
+import string
+import random
 from django.http.response import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import status
@@ -28,7 +32,19 @@ class UserHandler(APIView):
             personserializer = PersonSerializer(data=registerdata)
             if personserializer.is_valid():
                 personserializer.save()
+                email(registerdata['email'], username)
                 return JsonResponse({'status': 'CREATED'}, status=status.HTTP_201_CREATED)
             user.delete()
             return JsonResponse(personserializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return JsonResponse(userserializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def email(receiver, username):
+        red = redis.StrictRedis(
+            host='localhost', port=6379, password='', charset="utf-8", decode_responses=True)
+        random_token = ''.join([random.choice(
+            string.ascii_uppercase + string.ascii_uppercase) for _ in range(50)])
+        red.hmset(random_token, {"username": username})
+
+        jsonDic = {'token': random_token, 'receiver': receiver}
+        jsonStr = json.dumps(jsonDic)
+        red.rpush('email', jsonStr)
