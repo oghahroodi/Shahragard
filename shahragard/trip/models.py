@@ -1,5 +1,10 @@
 from django.db import models
 from user.models import User
+from .models import Trip, RequestTrip
+
+
+admin.site.register(Trip)
+admin.site.register(RequestTrip)
 
 
 class Trip(models.Model):
