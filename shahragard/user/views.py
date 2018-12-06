@@ -54,3 +54,15 @@ class UserHandler(APIView):
         jsonDic = {'token': random_token, 'receiver': receiver}
         jsonStr = json.dumps(jsonDic)
         red.rpush('email', jsonStr)
+
+
+def validation(request, token):
+    red = redis.StrictRedis(host='localhost', port=6379,
+                            password='', charset="utf-8",
+                            decode_responses=True)
+    info = red.hgetall(token)
+    username = info.get('username')
+    user = User.objects.get(username=username)
+    user.is_active = True
+    user.save()
+    return HttpResponse("ایمیل با موفقیت تایید شد")
