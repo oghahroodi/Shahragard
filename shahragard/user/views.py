@@ -13,6 +13,21 @@ from .models import Person
 from rest_framework.permissions import AllowAny
 
 
+class Edit(APIView):
+    def patch(self, request):
+        email = request.data.get("email")
+        name = request.data.get("name")
+        car = request.data.get("car")
+        plaque = request.data.get("plaque")
+        person = Person.objects.get(user__id=request.user.id)
+        person.name = name
+        person.email = email
+        person.car = car
+        person.plaque = plaque
+        person.save()
+        return JsonResponse({"status": "200"})
+
+
 class UserHandler(APIView):
     permission_classes = (AllowAny,)
 
