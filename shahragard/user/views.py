@@ -20,10 +20,14 @@ class Edit(APIView):
         car = request.data.get("car")
         plaque = request.data.get("plaque")
         person = Person.objects.get(user__id=request.user.id)
-        person.name = name
-        person.email = email
-        person.car = car
-        person.plaque = plaque
+        if name != '':
+            person.name = name
+        if email != '':
+            person.email = email
+        if car != '':
+            person.car = car
+        if plaque != '':
+            person.plaque = plaque
         person.save()
         return JsonResponse({"status": "200"})
 
