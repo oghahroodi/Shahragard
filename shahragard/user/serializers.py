@@ -15,3 +15,10 @@ class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
         fields = ('user', 'name', 'phone_number', 'email')
+
+
+class ProfilePageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Person
+        fields = ('user', 'name', 'phone_number', 'email', 'car', 'plaque')
