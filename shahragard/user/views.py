@@ -1,15 +1,15 @@
-import binascii
 import json
 import redis
 import string
 import random
-from django.http.response import HttpResponse
-from rest_framework.views import APIView
-from rest_framework import status
+import binascii
 from .serializers import *
-from django.http import JsonResponse
-from django.contrib.auth.models import User
 from .models import Person
+from rest_framework import status
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from django.contrib.auth.models import User
+from django.http.response import HttpResponse
 from rest_framework.permissions import AllowAny
 
 
