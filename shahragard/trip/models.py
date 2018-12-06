@@ -1,6 +1,5 @@
 from django.db import models
 from user.models import User
-from .models import Trip, RequestTrip
 
 
 class Trip(models.Model):
