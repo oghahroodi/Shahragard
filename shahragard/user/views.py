@@ -32,7 +32,7 @@ class UserHandler(APIView):
             personserializer = PersonSerializer(data=registerdata)
             if personserializer.is_valid():
                 personserializer.save()
-                email(registerdata['email'], username)
+                UserHandler.email(registerdata['email'], username)
                 return JsonResponse({'status': 'CREATED'},
                                     status=status.HTTP_201_CREATED)
             user.delete()
