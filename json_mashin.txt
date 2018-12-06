@@ -1,41 +1,41 @@
 {
 
-'1':{
+"1":{
 	'car':"پراید",
 	'max_num_of_passngr':"4"
 },
 
-'2':{
+"2":{
 	'car':"تیبا",
 	'max_num_of_passngr':"4"
 },
 
-'3':{
+"3":{
 	'car':"تندر90",
 	'max_num_of_passngr':"4"
 },
 
-'4':{
+"4":{
 	'car':"سمند",
 	'max_num_of_passngr':"4"
 },
 
-'5':{
+"5":{
 	'car':"پژو206",
 	'max_num_of_passngr':"4"
 },
 
-'6':{
+"6":{
 	'car':"پژو405",
 	'max_num_of_passngr':"4"
 },
 
-'7':{
+"7":{
 	'car':"پژو پارس",
 	'max_num_of_passngr':"4"
 },
 
-'8':{
+"8":{
 	'car':"لکسوس",
 	'max_num_of_passngr':"4"
 }
