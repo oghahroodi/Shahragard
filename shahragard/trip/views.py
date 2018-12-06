@@ -30,7 +30,7 @@ class TripHandler(APIView):
                 return JsonResponse(
                     {'status': 'pls enter valid cost'},
                     status=status.HTTP_400_BAD_REQUEST)
-        f = open(os.path.dirname(__file__) + '/../json_shahr.json').read()
+        f = open(os.path.dirname(__file__) + '/../../json_shahr.json').read()
         data = json.loads(f)
         tmp1 = False
         tmp2 = False
