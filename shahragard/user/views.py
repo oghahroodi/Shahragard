@@ -1,3 +1,4 @@
+import os
 import json
 import redis
 import string
@@ -19,6 +20,29 @@ class Edit(APIView):
         name = request.data.get("name")
         car = request.data.get("car")
         plaque = request.data.get("plaque")
+        if len(plaque) != 6:
+            return JsonResponse({"status": "pls enter valid plaque"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        for i in range(len(plaque)-1, -1, -1):
+            if i != 3:
+                if not(plaque[i].isdigit()):
+                    return JsonResponse({"status": "pls enter valid plaque"},
+                                        status=status.HTTP_400_BAD_REQUEST)
+            else:
+                if plaque[i].isdigit():
+                    return JsonResponse({"status": "pls enter valid plaque"},
+                                        status=status.HTTP_400_BAD_REQUEST)
+
+        f = open(os.path.dirname(__file__) + '/../../json_mashin.json').read()
+        data = json.loads(f)
+        tmp = False
+        for i in data.keys():
+            if car == i:
+                tmp = True
+                break
+        if not tmp:
+            return JsonResponse({"status": "pls enter valid machine"},
+                                status=status.HTTP_400_BAD_REQUEST)
         person = Person.objects.get(user__id=request.user.id)
         if name != '':
             person.name = name
