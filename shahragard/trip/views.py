@@ -6,6 +6,7 @@ from .serializers import *
 from user.models import *
 from user.models import User, Person
 from django.http import JsonResponse
+from .models import RequestTrip, Trip
 
 
 class TripHandler(APIView):
@@ -61,8 +62,14 @@ class TripHandler(APIView):
         serializer = RequestTripSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse({'status': 'CREATED'}, status=status.HTTP_201_CREATED)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'status': 'CREATED'},
+                                status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
-
-
+    def delete(self, request):
+        userid = self.request.user.id
+        tripid = request.data['trip']
+        RequestTrip.objects.filter(user=userid, trip=tripid).delete()
+        return JsonResponse({'status': 'DELETED'},
+                            status=status.HTTP_202_ACCEPTED)
