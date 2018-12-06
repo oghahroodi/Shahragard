@@ -8,3 +8,10 @@ class MakeTripSerializer(serializers.ModelSerializer):
         model = Trip
         fields = ('user', 'start_time', 'origin', 'destination', 'cost',
                   'number_of_passengers')
+
+
+class RequestTripSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RequestTrip
+        fields = ('user', 'trip', 'number_of_passengers')
