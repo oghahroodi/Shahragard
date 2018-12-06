@@ -10,7 +10,7 @@ class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
         fields = ('user', 'username', 'start_time', 'origin', 'destination',
-                  'number_of_passengers',)
+                  'number_of_passengers', 'id')
 
     def get_username(self, obj):
         user = User.objects.get(id=obj.user.id)
