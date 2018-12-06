@@ -3,9 +3,6 @@ from user.models import User
 from .models import Trip, RequestTrip
 
 
-
-
-
 class Trip(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     start_time = models.CharField(max_length=50, null=False)
