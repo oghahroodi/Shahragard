@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework import status
-from .seializers import *
+from .serializers import *
 from user.models import *
 from user.models import User, Person
 from django.http import JsonResponse
