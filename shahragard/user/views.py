@@ -38,6 +38,7 @@ class UserHandler(APIView):
             return JsonResponse(personserializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return JsonResponse(userserializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @staticmethod
     def email(receiver, username):
         red = redis.StrictRedis(
             host='localhost', port=6379, password='', charset="utf-8", decode_responses=True)
