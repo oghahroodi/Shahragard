@@ -12,6 +12,9 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from django.http.response import HttpResponse
 from rest_framework.permissions import AllowAny
+from trip.models import RequestTrip
+from django.db.models import Q
+
 
 
 class Edit(APIView):
@@ -116,3 +119,17 @@ def validation(request, token):
     user.is_active = True
     user.save()
     return HttpResponse("ایمیل با موفقیت تایید شد")
+
+
+class historyHandler(APIView):
+
+    def get(self, request):
+        userid = self.request.user.id
+        query = Q()
+        query = Q(user_id=userid)
+        q = RequestTrip.objects.filter(query)
+        serializer = RequestTripSerializer(q, many=True, context={
+            "userid": request.user.id})
+        return JsonResponse({'res': loads(dumps(serializer.data))}, status=status.HTTP_200_OK)
+
+    
