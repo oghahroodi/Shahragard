@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import sentry_sdk
 from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -152,3 +153,6 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+
+sentry_sdk.init("https://3bb41b7a4bf14122ab3e2c0285b37405@sentry.io/1357111")

@@ -65,8 +65,10 @@ class UserHandler(APIView):
         username = request.data.get('username')
         password = request.data.get('password')
         registerdata = request.data.copy()
+
         userserializer = UserSerializer(
             data={"username": username, "password": password})
+
         if userserializer.is_valid():
             user = userserializer.save()
             userid = user.id
@@ -75,14 +77,24 @@ class UserHandler(APIView):
             user.save()
             registerdata['user'] = userid
             personserializer = PersonSerializer(data=registerdata)
+
             if personserializer.is_valid():
                 personserializer.save()
-                UserHandler.email(registerdata['email'], username)
+
+                try:
+                    UserHandler.email(registerdata['email'], username)
+                except redis.exceptions.ConnectionError:
+                    return JsonResponse(personserializer.errors,
+                                        status=status.
+                                        HTTP_503_SERVICE_UNAVAILABLE)
+
                 return JsonResponse({'status': 'CREATED'},
                                     status=status.HTTP_201_CREATED)
             user.delete()
+
             return JsonResponse(personserializer.errors,
                                 status=status.HTTP_400_BAD_REQUEST)
+
         return JsonResponse(userserializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
@@ -109,12 +121,17 @@ class UserHandler(APIView):
 
 
 def validation(request, token):
-    red = redis.StrictRedis(host='localhost', port=6379,
-                            password='', charset="utf-8",
-                            decode_responses=True)
-    info = red.hgetall(token)
-    username = info.get('username')
-    user = User.objects.get(username=username)
-    user.is_active = True
-    user.save()
-    return HttpResponse("ایمیل با موفقیت تایید شد")
+    try:
+        red = redis.StrictRedis(host='localhost', port=6379,
+                                password='', charset="utf-8",
+                                decode_responses=True)
+        info = red.hgetall(token)
+        username = info.get('username')
+        user = User.objects.get(username=username)
+        user.is_active = True
+        user.save()
+        return HttpResponse("ایمیل با موفقیت تایید شد")
+    except redis.exceptions.ConnectionError:
+        return JsonResponse(personserializer.errors,
+                            status=status.
+                            HTTP_503_SERVICE_UNAVAILABLE)
