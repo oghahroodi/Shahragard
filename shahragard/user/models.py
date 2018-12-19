@@ -21,3 +21,7 @@ class Person(models.Model):
         validators=[email_regex], max_length=70, null=False, unique=True)
     car = models.CharField(max_length=10, null=True, blank=True)
     plaque = models.CharField(max_length=5, null=True, blank=True)
+
+
+class SuggetionFeature(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

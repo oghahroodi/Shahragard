@@ -118,3 +118,7 @@ def validation(request, token):
     user.is_active = True
     user.save()
     return HttpResponse("ایمیل با موفقیت تایید شد")
+
+
+class SuggestionHnadler(APIView):
+    pass
