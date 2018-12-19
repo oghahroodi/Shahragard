@@ -1,16 +1,61 @@
-import binascii
+import os
 import json
 import redis
 import string
 import random
-from django.http.response import HttpResponse
-from rest_framework.views import APIView
-from rest_framework import status
+import binascii
 from .serializers import *
-from django.http import JsonResponse
-from django.contrib.auth.models import User
 from .models import Person
+from rest_framework import status
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from django.contrib.auth.models import User
+from django.http.response import HttpResponse
 from rest_framework.permissions import AllowAny
+
+
+class Edit(APIView):
+    def patch(self, request):
+        email = request.data.get("email")
+        name = request.data.get("name")
+        car = request.data.get("car")
+        plaque = request.data.get("plaque")
+        if plaque != '' and car != '':
+            if len(plaque) != 6:
+                return JsonResponse({"status": "pls enter valid plaque"},
+                                    status=status.HTTP_400_BAD_REQUEST)
+            for i in range(len(plaque)-1, -1, -1):
+                if i != 3:
+                    if not(plaque[i].isdigit()):
+                        return JsonResponse({"status": "pls enter valid plaque"},
+                                            status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    if plaque[i].isdigit():
+                        return JsonResponse({"status": "pls enter valid plaque"},
+                                            status=status.HTTP_400_BAD_REQUEST)
+
+            f = open(os.path.dirname(__file__) +
+                     '/../../json_mashin.json').read()
+            data = json.loads(f)
+            tmp = False
+            for i in data.keys():
+                if car == i:
+                    tmp = True
+                    break
+            if not tmp:
+                return JsonResponse({"status": "pls enter valid machine"},
+                                    status=status.HTTP_400_BAD_REQUEST)
+        person = Person.objects.get(user__id=request.user.id)
+        if name != '':
+            person.name = name
+        if email != '':
+            person.email = email
+        if car != '':
+            person.car = car
+        if plaque != '':
+            person.plaque = plaque
+        person.save()
+        return JsonResponse({"status": "200"})
 
 
 class UserHandler(APIView):
@@ -40,6 +85,13 @@ class UserHandler(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
         return JsonResponse(userserializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        userid = self.request.user.id
+        request.data['user'] = userid
+        person = Person.objects.get(user__id=userid)
+        serializer = ProfilePageSerializer(person, context={"userid": userid})
+        return JsonResponse(serializer.data)
 
     @staticmethod
     def email(receiver, username):
