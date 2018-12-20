@@ -5,6 +5,7 @@ import string
 import random
 import binascii
 import rollbar
+import logging
 from json import loads, dumps
 from .serializers import *
 from .models import Person
@@ -15,6 +16,8 @@ from django.contrib.auth.models import User
 from django.http.response import HttpResponse
 from rest_framework.permissions import AllowAny
 from trip.models import RequestTrip
+
+logger = logging.getLogger(__name__)
 
 
 class Edit(APIView):
@@ -91,13 +94,13 @@ class UserHandler(APIView):
                     return JsonResponse(personserializer.errors,
                                         status=status.
                                         HTTP_503_SERVICE_UNAVAILABLE)
+                logger.info("user with username : "+username+" created")
                 return JsonResponse({'status': 'CREATED'},
                                     status=status.HTTP_201_CREATED)
             user.delete()
             rollbar.report_message("signup problem"+str(registerdata))
             return JsonResponse(personserializer.errors,
                                 status=status.HTTP_400_BAD_REQUEST)
-
         rollbar.report_message("signup problem"+str(registerdata))
         return JsonResponse(userserializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
@@ -107,6 +110,7 @@ class UserHandler(APIView):
         request.data['user'] = userid
         person = Person.objects.get(user__id=userid)
         serializer = ProfilePageSerializer(person, context={"userid": userid})
+        logger.info("userid : "+str(userid)+" seen profile page")
         return JsonResponse(serializer.data)
 
     @staticmethod
