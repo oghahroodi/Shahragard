@@ -4,6 +4,7 @@ import redis
 import string
 import random
 import binascii
+import rollbar
 from .serializers import *
 from .models import Person
 from rest_framework import status
@@ -84,17 +85,18 @@ class UserHandler(APIView):
                 try:
                     UserHandler.email(registerdata['email'], username)
                 except redis.exceptions.ConnectionError:
+                    rollbar.report_message("redis problem")
                     return JsonResponse(personserializer.errors,
                                         status=status.
                                         HTTP_503_SERVICE_UNAVAILABLE)
-
                 return JsonResponse({'status': 'CREATED'},
                                     status=status.HTTP_201_CREATED)
             user.delete()
-
+            rollbar.report_message("signup problem"+str(registerdata))
             return JsonResponse(personserializer.errors,
                                 status=status.HTTP_400_BAD_REQUEST)
 
+        rollbar.report_message("signup problem"+str(registerdata))
         return JsonResponse(userserializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
