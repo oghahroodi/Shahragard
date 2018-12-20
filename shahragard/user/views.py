@@ -110,6 +110,7 @@ class UserHandler(APIView):
         request.data['user'] = userid
         person = Person.objects.get(user__id=userid)
         serializer = ProfilePageSerializer(person, context={"userid": userid})
+        logger.info("userid : "+str(userid)+" seen profile page")
         return JsonResponse(serializer.data)
 
     @staticmethod
