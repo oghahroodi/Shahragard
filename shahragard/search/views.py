@@ -47,7 +47,8 @@ class SearchTrips(APIView):
         tmp1 = False
         tmp2 = False
 
-        if not(SearchTrips.is_number(request.data['number_of_passengers'])):
+        if (not(SearchTrips.is_number(request.data['number_of_passengers'])) and
+                request.data['number_of_passengers'] != ''):
             return JsonResponse(
                 {'status': 'pls enter valid number'},
                 status=status.HTTP_400_BAD_REQUEST)
