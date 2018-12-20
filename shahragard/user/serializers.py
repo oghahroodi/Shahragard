@@ -95,3 +95,17 @@ class NotifSerializer(serializers.ModelSerializer):
         resList = loads(dumps(serializer.data))
         # print(resList)
         return ({"trip": resList})
+
+
+class HistorySerializer(serializers.ModelSerializer):
+    tripData = serializers.SerializerMethodField()
+
+    class Meta:
+        model = RequestTrip
+        fields = ('user', 'trip', 'number_of_passengers', 'accept', 'tripData')
+
+    def get_tripData(self, obj):
+        trip = Trip.objects.filter(id=obj.trip.id)
+        serializer = MakeTripSerializer(list(trip), many=True)
+        resList = loads(dumps(serializer.data))
+        return ({"trip": resList})
