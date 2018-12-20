@@ -5,6 +5,7 @@ import string
 import random
 import binascii
 import rollbar
+from json import loads, dumps
 from .serializers import *
 from .models import Person
 from rest_framework import status
@@ -13,6 +14,7 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from django.http.response import HttpResponse
 from rest_framework.permissions import AllowAny
+from trip.models import RequestTrip
 
 
 class Edit(APIView):
@@ -137,3 +139,15 @@ def validation(request, token):
         return JsonResponse(personserializer.errors,
                             status=status.
                             HTTP_503_SERVICE_UNAVAILABLE)
+
+
+class NotificationHandler(APIView):
+
+    def get(self, request):
+        userid = self.request.user.id
+        notification = RequestTrip.objects.filter(trip__user__id=userid)
+        # person = Person.objects.filter(user__id=userid)
+        serializer = NotifSerializer(list(notification), many=True)
+        resList = loads(dumps(serializer.data))
+        # print(resList)
+        return JsonResponse({"res": resList})
