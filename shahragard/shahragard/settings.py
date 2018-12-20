@@ -1,3 +1,5 @@
+from django.utils.log import DEFAULT_LOGGING
+import logging
 """
 Django settings for shahragard project.
 
@@ -11,6 +13,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import rollbar
+# import sentry_sdk
 from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -40,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'trip',
     'user',
+    'coverage',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
 ]
 
 ROOT_URLCONF = 'shahragard.urls'
@@ -151,3 +157,43 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+
+# sentry_sdk.init("https://3bb41b7a4bf14122ab3e2c0285b37405@sentry.io/1357111")
+
+ROLLBAR = {
+    'access_token': '4f51ee7d738248eda5e6e8dcf01f2786',
+    'environment': 'development' if DEBUG else 'production',
+    'root': BASE_DIR,
+}
+rollbar.init(**ROLLBAR)
+# rollbar.report_message("Hello world")
+
+LOGGING_CONFIG = None
+logging.config.dictConfig({
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console',
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'logs.log',
+
+        }
+    },
+    'loggers': {
+        '': {
+            'level': 'INFO',
+            'handlers': ['console', 'file'],
+        },
+    },
+})
