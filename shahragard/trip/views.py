@@ -1,5 +1,6 @@
 import json
 import os.path
+import logging
 from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import *
@@ -7,6 +8,8 @@ from user.models import *
 from user.models import User, Person
 from django.http import JsonResponse
 from .models import RequestTrip, Trip
+
+logger = logging.getLogger(__name__)
 
 
 class TripHandler(APIView):
@@ -62,6 +65,8 @@ class TripHandler(APIView):
         serializer = RequestTripSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            logger.info("userid : "+str(userid) +
+                        " join to "+str(request.data['trip']))
             return JsonResponse({'status': 'CREATED'},
                                 status=status.HTTP_201_CREATED)
         return JsonResponse(serializer.errors,
