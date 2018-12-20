@@ -30,7 +30,7 @@ SECRET_KEY = 'h3a%d@281gi&z*s2a$6+@pc*7zo2al-x(nhy%3o)=^$eaf4c46'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition

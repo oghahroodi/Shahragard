@@ -16,16 +16,23 @@ from django.contrib.auth.models import User
 from django.http.response import HttpResponse
 from rest_framework.permissions import AllowAny
 from trip.models import RequestTrip
+from user.const import Const
 
 logger = logging.getLogger(__name__)
 
 
 class Edit(APIView):
     def patch(self, request):
-        email = request.data.get("email")
-        name = request.data.get("name")
-        car = request.data.get("car")
-        plaque = request.data.get("plaque")
+        try:
+            email = request.data.get("email")
+            name = request.data.get("name")
+            car = request.data.get("car")
+            plaque = request.data.get("plaque")
+        except KeyError:
+            rollbar.report_message("search key problem")
+            return JsonResponse({'status': 'give valid data'},
+                                status=status.HTTP_400_BAD_REQUEST)
+
         if plaque != '' and car != '':
             if len(plaque) != 6:
                 return JsonResponse({"status": "pls enter valid plaque"},
@@ -41,16 +48,19 @@ class Edit(APIView):
                                             status=status.HTTP_400_BAD_REQUEST)
 
             f = open(os.path.dirname(__file__) +
-                     '/../../json_mashin.json').read()
+                     Const.mashin).read()
+
             data = json.loads(f)
             tmp = False
             for i in data.keys():
                 if car == i:
                     tmp = True
                     break
+
             if not tmp:
                 return JsonResponse({"status": "pls enter valid machine"},
                                     status=status.HTTP_400_BAD_REQUEST)
+
         person = Person.objects.get(user__id=request.user.id)
         if name != '':
             person.name = name
@@ -60,7 +70,9 @@ class Edit(APIView):
             person.car = car
         if plaque != '':
             person.plaque = plaque
+
         person.save()
+        logger.info("user with username : "+equest.user.id+" changed settings")
         return JsonResponse({"status": "200"})
 
 
