@@ -13,4 +13,5 @@ urlpatterns = [
     path('apiv1/user/', views.UserHandler.as_view()),
     path('apiv1/verification/<str:token>/', views.validation),
     path('apiv1/edit/', views.Edit.as_view()),
+    path('apiv1/notif/', views.NotificationHandler.as_view()),
 ]
