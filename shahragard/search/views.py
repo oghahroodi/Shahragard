@@ -1,6 +1,5 @@
 import os
 import json
-from search.const import Const
 from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework import generics, status
@@ -10,6 +9,7 @@ from trip.models import Trip
 from django.db.models import Q
 from .serializers import TripSerializer
 from json import loads, dumps
+from search.const import Const
 
 
 class SearchTrips(APIView):
@@ -26,26 +26,6 @@ class SearchTrips(APIView):
             return JsonResponse({'status': 'give valid data'},
                                 status=status.HTTP_400_BAD_REQUEST)
 
-        SearchTrips.validator(request)
-        query = Q()
-
-        if start_time != '':
-            query = query & Q(start_time=start_time)
-        if origin != '':
-            query = query & Q(origin=origin)
-        if destination != '':
-            query = query & Q(destination=destination)
-        if number_of_passengers != '':
-            query = query & Q(number_of_passengers=number_of_passengers)
-
-        q = Trip.objects.filter(query)
-        serializer = TripSerializer(q, many=True, context={
-            "userid": request.user.id})
-        return JsonResponse({'res': loads(dumps(serializer.data))},
-                            status=status.HTTP_200_OK)
-
-    @staticmethod
-    def validator(request):
         if (len(request.data.get('start_time')) != 6 and
                 len(request.data.get('start_time')) != 0):
             return JsonResponse(
@@ -83,3 +63,23 @@ class SearchTrips(APIView):
             return JsonResponse(
                 {'status': 'pls enter valid city'},
                 status=status.HTTP_400_BAD_REQUEST)
+
+        query = Q()
+        number_of_passengers = request.data['number_of_passengers']
+
+        if start_time != '':
+            query = query & Q(start_time=start_time)
+        if origin != '':
+            query = query & Q(origin=origin)
+        if destination != '':
+            query = query & Q(destination=destination)
+        if number_of_passengers != '':
+            query = query & Q(number_of_passengers=number_of_passengers)
+        query = query & ~Q(user=userid)
+
+        q = Trip.objects.filter(query)
+        serializer = TripSerializer(q, many=True, context={
+            "userid": request.user.id})
+
+        return JsonResponse({'res': loads(dumps(serializer.data))},
+                            status=status.HTTP_200_OK)
