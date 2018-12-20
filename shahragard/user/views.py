@@ -155,3 +155,14 @@ class NotificationHandler(APIView):
         resList = loads(dumps(serializer.data))
         # print(resList)
         return JsonResponse({"res": resList})
+
+
+class HistoryHnadler(APIView):
+
+    def get(self, request):
+        userid = self.request.user.id
+        history = RequestTrip.objects.filter(user__id=userid)
+        serializer = HistorySerializer(list(history), many=True)
+        resList = loads(dumps(serializer.data))
+        rollbar.report_message("userid "+str(userid)+" got history")
+        return JsonResponse({"res": resList})
