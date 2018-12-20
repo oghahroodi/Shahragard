@@ -43,5 +43,5 @@ class NotifSerializer(serializers.ModelSerializer):
         trip = Trip.objects.filter(id=obj.trip.id)
         serializer = MakeTripSerializer(list(trip), many=True)
         resList = loads(dumps(serializer.data))
-        print(resList)
+        # print(resList)
         return ({"trip": resList})

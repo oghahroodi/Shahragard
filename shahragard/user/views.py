@@ -130,5 +130,5 @@ class NotificationHandler(APIView):
         # person = Person.objects.filter(user__id=userid)
         serializer = NotifSerializer(list(notification), many=True)
         resList = loads(dumps(serializer.data))
-        print(resList)
+        # print(resList)
         return JsonResponse({"res": resList})
