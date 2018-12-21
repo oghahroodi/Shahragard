@@ -1,8 +1,18 @@
 from rest_framework import serializers
 from .models import *
+from user.models import User, Person
 
 
 class MakeTripSerializer(serializers.ModelSerializer):
+
+    def validate(self, data):
+        userInstance = Person.objects.get(user__username=data['user'])
+        print(userInstance)
+        if not(userInstance.hasCar()):
+            print('sssssssss')
+            raise serializers.ValidationError("nnn")
+
+        return data
 
     class Meta:
         model = Trip

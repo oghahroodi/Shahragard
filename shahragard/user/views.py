@@ -72,7 +72,7 @@ class Edit(APIView):
             person.plaque = plaque
 
         person.save()
-        logger.info("user with username : "+equest.user.id+" changed settings")
+        logger.info("user with username : "+str(request.user.id)+" changed settings")
         return JsonResponse({"status": "200"})
 
 

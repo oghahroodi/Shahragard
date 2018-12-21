@@ -19,3 +19,7 @@ class Person(models.Model):
     email = models.CharField(max_length=70, null=False, unique=True)
     car = models.CharField(max_length=10, null=True, blank=True)
     plaque = models.CharField(max_length=5, null=True, blank=True)
+
+    def hasCar(self):
+        if self.car is not None and self.plaque is not None:
+            return True
