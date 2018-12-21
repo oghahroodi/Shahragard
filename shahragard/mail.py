@@ -12,9 +12,15 @@ def email(receiver, random_token):
 
 
 while(True):
-    connRedis = redis.StrictRedis(
-        host='localhost', port=6379, password='', charset="utf-8",
-        decode_responses=True)
-    mail = connRedis.blpop('email')
-    mail = json.loads(mail[1])
-    email(mail['receiver'], mail['token'])
+    try:
+        connRedis = redis.StrictRedis(
+            host='localhost', port=6379, password='', charset="utf-8",
+            decode_responses=True)
+        mail = connRedis.blpop('email')
+        mail = json.loads(mail[1])
+    except redis.exceptions.ConnectionError:
+        break
+    try:
+        email(mail['receiver'], mail['token'])
+    except:
+        pass

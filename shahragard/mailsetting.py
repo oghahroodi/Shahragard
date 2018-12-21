@@ -8,5 +8,5 @@ settings.configure(EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend',
 
 subject = 'Thank you for registering to our app'
 message = 'برای فعال سازی اکانت بر روی لینک زیر کلیک کنید \n' + \
-    '127.0.0.1:8000/apiv1/verification/'
+    '194.225.229.223:8000/apiv1/verification/'
 email_from = settings.EMAIL_HOST_USER
