@@ -15,11 +15,12 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from django.http.response import HttpResponse
 from rest_framework.permissions import AllowAny
-from trip.models import RequestTrip
+from trip.models import Trip, RequestTrip
 from user.const import Const
 
 logger = logging.getLogger(__name__)
 
+>>>>>>> shahragard/user/views.py
 
 class Edit(APIView):
     def patch(self, request):
@@ -141,6 +142,28 @@ class UserHandler(APIView):
 
 
 def validation(request, token):
+<<<<<<< shahragard/user/views.py
+    red = redis.StrictRedis(host='localhost', port=6379,
+                            password='', charset="utf-8",
+                            decode_responses=True)
+    info = red.hgetall(token)
+    username = info.get('username')
+    user = User.objects.get(username=username)
+    user.is_active = True
+    user.save()
+    return HttpResponse("ایمیل با موفقیت تایید شد")
+
+
+def get_suggestion_trips(user):
+    qs1 = Trip.objects.values("origin", "destination")  # TODO: add active == True
+    qs2 = RequestTrip.objects.filter(user=user).values("origin", "destination")
+    return [dict(origin=i["origin"],destination=i["destination"]) for i in qs1.intersection(qs2)]
+
+
+class SuggestionHandler(APIView):
+    def get(self, request):
+        return JsonResponse({"result": get_suggestion_trips(request.user)})
+=======
     try:
         red = redis.StrictRedis(host='localhost', port=6379,
                                 password='', charset="utf-8",
@@ -178,3 +201,4 @@ class HistoryHnadler(APIView):
         resList = loads(dumps(serializer.data))
         rollbar.report_message("userid "+str(userid)+" got history")
         return JsonResponse({"res": resList})
+>>>>>>> shahragard/user/views.py

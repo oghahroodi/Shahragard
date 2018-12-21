@@ -23,3 +23,8 @@ class Person(models.Model):
     def hasCar(self):
         if self.car is not None and self.plaque is not None:
             return True
+
+
+class SuggetionFeature(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
