@@ -61,7 +61,7 @@ class TripHandler(APIView):
         request.data['user'] = userid
         serializer = RequestTripSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(origin=request.data['trip'].origin, destination=request.data['trip'].destination)
             logger.info("userid : "+str(userid) +
                         " join to "+str(request.data['trip']))
             return JsonResponse({'status': 'CREATED'},
