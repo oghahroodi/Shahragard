@@ -22,5 +22,4 @@ class RequestTripSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RequestTrip
-        fields = ('user', 'trip', 'number_of_passengers',
-                  'origin', 'destination')
+        fields = ('user', 'trip', 'number_of_passengers')
