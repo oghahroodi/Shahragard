@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from django.http.response import HttpResponse
 from rest_framework.permissions import AllowAny
-
+from trip.models import Trip, RequestTrip
 
 class Edit(APIView):
     def patch(self, request):
@@ -120,5 +120,12 @@ def validation(request, token):
     return HttpResponse("ایمیل با موفقیت تایید شد")
 
 
-class SuggestionHnadler(APIView):
-    pass
+def get_suggestion_trips(user):
+    qs1 = Trip.objects.values("origin", "destination")  # TODO: add active == True
+    qs2 = RequestTrip.objects.filter(user=user).values("origin", "destination")
+    return [dict(origin=i["origin"],destination=i["destination"]) for i in qs1.intersection(qs2)]
+
+
+class SuggestionHandler(APIView):
+    def get(self, request):
+        return JsonResponse({"result": get_suggestion_trips(request.user)})
