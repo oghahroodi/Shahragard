@@ -7,9 +7,7 @@ class MakeTripSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         userInstance = Person.objects.get(user__username=data['user'])
-        print(userInstance)
         if not(userInstance.hasCar()):
-            print('sssssssss')
             raise serializers.ValidationError("nnn")
 
         return data
@@ -24,4 +22,5 @@ class RequestTripSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RequestTrip
-        fields = ('user', 'trip', 'number_of_passengers')
+        fields = ('user', 'trip', 'number_of_passengers',
+                  'origin', 'destination')
