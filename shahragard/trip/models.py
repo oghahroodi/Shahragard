@@ -16,3 +16,5 @@ class RequestTrip(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     accept = models.BooleanField(default=False)
     number_of_passengers = models.IntegerField(null=False)
+    origin = models.CharField(max_length=50, null=False)
+    destination = models.CharField(max_length=50, null=False)
