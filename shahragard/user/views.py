@@ -4,7 +4,7 @@ import redis
 import string
 import random
 import binascii
-import rollbar
+# import rollbar
 import logging
 from json import loads, dumps
 from .serializers import *
@@ -18,7 +18,7 @@ from rest_framework.permissions import AllowAny
 from trip.models import Trip, RequestTrip
 from user.const import Const
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 
 class Edit(APIView):
@@ -29,7 +29,7 @@ class Edit(APIView):
             car = request.data.get("car")
             plaque = request.data.get("plaque")
         except KeyError:
-            rollbar.report_message("search key problem")
+            # rollbar.report_message("search key problem")
             return JsonResponse({'status': 'give valid data'},
                                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -72,7 +72,7 @@ class Edit(APIView):
             person.plaque = plaque
 
         person.save()
-        logger.info("user with username : "+str(request.user.id)+" changed settings")
+        # logger.info("user with username : "+str(request.user.id)+" changed settings")
         return JsonResponse({"status": "200"})
 
 
@@ -102,18 +102,18 @@ class UserHandler(APIView):
                 try:
                     UserHandler.email(registerdata['email'], username)
                 except redis.exceptions.ConnectionError:
-                    rollbar.report_message("redis problem")
+                    # rollbar.report_message("redis problem")
                     return JsonResponse(personserializer.errors,
                                         status=status.
                                         HTTP_503_SERVICE_UNAVAILABLE)
-                logger.info("user with username : "+username+" created")
+                # logger.info("user with username : "+username+" created")
                 return JsonResponse({'status': 'CREATED'},
                                     status=status.HTTP_201_CREATED)
             user.delete()
-            rollbar.report_message("signup problem"+str(registerdata))
+            # rollbar.report_message("signup problem"+str(registerdata))
             return JsonResponse(personserializer.errors,
                                 status=status.HTTP_400_BAD_REQUEST)
-        rollbar.report_message("signup problem"+str(registerdata))
+        # rollbar.report_message("signup problem"+str(registerdata))
         return JsonResponse(userserializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
@@ -122,7 +122,7 @@ class UserHandler(APIView):
         request.data['user'] = userid
         person = Person.objects.get(user__id=userid)
         serializer = ProfilePageSerializer(person, context={"userid": userid})
-        logger.info("userid : "+str(userid)+" seen profile page")
+        # logger.info("userid : "+str(userid)+" seen profile page")
         return JsonResponse(serializer.data)
 
     @staticmethod
@@ -187,5 +187,5 @@ class HistoryHnadler(APIView):
         history = RequestTrip.objects.filter(user__id=userid)
         serializer = HistorySerializer(list(history), many=True)
         resList = loads(dumps(serializer.data))
-        rollbar.report_message("userid "+str(userid)+" got history")
+        # rollbar.report_message("userid "+str(userid)+" got history")
         return JsonResponse({"res": resList})

@@ -12,7 +12,7 @@ from .serializers import TripSerializer
 from json import loads, dumps
 from search.const import Const
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 
 class SearchTrips(APIView):
@@ -26,7 +26,7 @@ class SearchTrips(APIView):
             destination = request.data['destination']
             number_of_passengers = request.data['number_of_passengers']
         except KeyError:
-            rollbar.report_message("search key problem")
+            # rollbar.report_message("search key problem")
             return JsonResponse({'status': 'give valid data'},
                                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -91,7 +91,7 @@ class SearchTrips(APIView):
         serializer = TripSerializer(q, many=True, context={
             "userid": request.user.id})
 
-        logger.info("userid : "+str(userid)+" searching")
+        # logger.info("userid : "+str(userid)+" searching")
         return JsonResponse({'res': loads(dumps(serializer.data))},
                             status=status.HTTP_200_OK)
 
