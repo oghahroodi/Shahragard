@@ -45,6 +45,10 @@ INSTALLED_APPS = [
     'trip',
     'user',
     'coverage',
+    'channels',
+    'chat.core.apps.CoreConfig',
+    'chat.channels_app.apps.ChannelsAppConfig',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -196,3 +200,14 @@ logging.config.dictConfig({
         },
     },
 })
+
+ASGI_APPLICATION = "chat.channels_app.routing.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": ['redis://localhost:6379/4']
+        }
+    },
+}
