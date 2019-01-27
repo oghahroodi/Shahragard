@@ -17,6 +17,7 @@ from django.http.response import HttpResponse
 from rest_framework.permissions import AllowAny
 from trip.models import Trip, RequestTrip
 from user.const import Const
+from search.serializers import TripSerializer
 
 # logger = logging.getLogger(__name__)
 
@@ -164,7 +165,25 @@ def validation(request, token):
 
 class SuggestionHandler(APIView):
     def get(self, request):
-        pass
+        userid = self.request.user.id
+        suggetionfeature = SuggetionFeature.objects.filter(user__id=userid)
+
+        if (list(suggetionfeature.values())[0]['search_origin_count'] >=
+                list(suggetionfeature.values())[0]['search_des_count']):
+            # print(max(list(suggetionfeature.values(
+            #     'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0]))
+            # print(list(suggetionfeature.values())[0])
+            print(max(list(suggetionfeature.values(
+                'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0]))
+            trip = Trip.objects.filter(origin=Const.city_map[max(list(suggetionfeature.values(
+                'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0])])
+            print(trip)
+        else:
+            trip = Trip.objects.filter(destination=Const.city_map[max(list(suggetionfeature.values(
+                'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0])])
+        serializer = TripSerializer(trip, many=True)
+        return JsonResponse({'res': loads(dumps(serializer.data))},
+                            status=status.HTTP_200_OK)
 
 
 class NotificationHandler(APIView):
