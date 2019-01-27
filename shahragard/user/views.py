@@ -8,7 +8,7 @@ import binascii
 import logging
 from json import loads, dumps
 from .serializers import *
-from .models import Person
+from .models import Person, SuggetionFeature
 from rest_framework import status
 from django.http import JsonResponse
 from rest_framework.views import APIView
@@ -107,6 +107,11 @@ class UserHandler(APIView):
                                         status=status.
                                         HTTP_503_SERVICE_UNAVAILABLE)
                 # logger.info("user with username : "+username+" created")
+                sugesstionserializer = SugesstionSerializer(
+                    data={"user": userid})
+                if sugesstionserializer.is_valid():
+                    sugesstionserializer.save()
+
                 return JsonResponse({'status': 'CREATED'},
                                     status=status.HTTP_201_CREATED)
             user.delete()
@@ -157,15 +162,9 @@ def validation(request, token):
                             HTTP_503_SERVICE_UNAVAILABLE)
 
 
-def get_suggestion_trips(user):
-    qs1 = Trip.objects.values("origin", "destination")  # TODO: add active == True
-    qs2 = RequestTrip.objects.filter(user=user).values("origin", "destination")
-    return [dict(origin=i["origin"],destination=i["destination"]) for i in qs1.intersection(qs2)]
-
-
 class SuggestionHandler(APIView):
     def get(self, request):
-        return JsonResponse({"result": get_suggestion_trips(request.user)})
+        pass
 
 
 class NotificationHandler(APIView):
