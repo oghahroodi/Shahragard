@@ -4,6 +4,7 @@ import redis
 import string
 import random
 import binascii
+import operator
 # import rollbar
 import logging
 from json import loads, dumps
@@ -170,17 +171,20 @@ class SuggestionHandler(APIView):
 
         if (list(suggetionfeature.values())[0]['search_origin_count'] >=
                 list(suggetionfeature.values())[0]['search_des_count']):
-            # print(max(list(suggetionfeature.values(
-            #     'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0]))
-            # print(list(suggetionfeature.values())[0])
-            print(max(list(suggetionfeature.values(
-                'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0]))
-            trip = Trip.objects.filter(origin=Const.city_map[max(list(suggetionfeature.values(
-                'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0])])
-            print(trip)
+            # print(list(suggetionfeature.values(
+            #     'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0])
+            l = list(suggetionfeature.values(
+                'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0]
+            trip = Trip.objects.filter(origin=Const.city_map[max(
+                l.items(), key=operator.itemgetter(1))[0]])
         else:
-            trip = Trip.objects.filter(destination=Const.city_map[max(list(suggetionfeature.values(
-                'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0])])
+            pass
+            # trip = Trip.objects.filter(destination=Const.city_map[max(list(suggetionfeature.values(
+            # 'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0])])
+            l = list(suggetionfeature.values(
+                'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0]
+            trip = Trip.objects.filter(destination=Const.city_map[max(
+                l.items(), key=operator.itemgetter(1))[0]])
         serializer = TripSerializer(trip, many=True)
         return JsonResponse({'res': loads(dumps(serializer.data))},
                             status=status.HTTP_200_OK)
