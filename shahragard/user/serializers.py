@@ -109,3 +109,11 @@ class HistorySerializer(serializers.ModelSerializer):
         serializer = MakeTripSerializer(list(trip), many=True)
         resList = loads(dumps(serializer.data))
         return ({"trip": resList})
+
+
+class SugesstionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SuggetionFeature
+        fields = ('user', 'mashhad', 'tehran', 'karaj', 'shiraz', 'qom',
+                  'search_origin_count', 'search_des_count', 'make_trip_count')

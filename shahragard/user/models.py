@@ -27,4 +27,11 @@ class Person(models.Model):
 
 class SuggetionFeature(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    mashhad = models.IntegerField(null=False, default=0)
+    tehran = models.IntegerField(null=False, default=0)
+    karaj = models.IntegerField(null=False, default=0)
+    shiraz = models.IntegerField(null=False, default=0)
+    qom = models.IntegerField(null=False, default=0)
+    search_origin_count = models.IntegerField(null=False, default=0)
+    search_des_count = models.IntegerField(null=False, default=0)
+    make_trip_count = models.IntegerField(null=False, default=0)

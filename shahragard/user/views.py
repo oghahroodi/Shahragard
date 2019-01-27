@@ -8,7 +8,7 @@ import binascii
 import logging
 from json import loads, dumps
 from .serializers import *
-from .models import Person
+from .models import Person, SuggetionFeature
 from rest_framework import status
 from django.http import JsonResponse
 from rest_framework.views import APIView
@@ -17,6 +17,7 @@ from django.http.response import HttpResponse
 from rest_framework.permissions import AllowAny
 from trip.models import Trip, RequestTrip
 from user.const import Const
+from search.serializers import TripSerializer
 
 # logger = logging.getLogger(__name__)
 
@@ -107,6 +108,11 @@ class UserHandler(APIView):
                                         status=status.
                                         HTTP_503_SERVICE_UNAVAILABLE)
                 # logger.info("user with username : "+username+" created")
+                sugesstionserializer = SugesstionSerializer(
+                    data={"user": userid})
+                if sugesstionserializer.is_valid():
+                    sugesstionserializer.save()
+
                 return JsonResponse({'status': 'CREATED'},
                                     status=status.HTTP_201_CREATED)
             user.delete()
@@ -157,15 +163,27 @@ def validation(request, token):
                             HTTP_503_SERVICE_UNAVAILABLE)
 
 
-def get_suggestion_trips(user):
-    qs1 = Trip.objects.values("origin", "destination")  # TODO: add active == True
-    qs2 = RequestTrip.objects.filter(user=user).values("origin", "destination")
-    return [dict(origin=i["origin"],destination=i["destination"]) for i in qs1.intersection(qs2)]
-
-
 class SuggestionHandler(APIView):
     def get(self, request):
-        return JsonResponse({"result": get_suggestion_trips(request.user)})
+        userid = self.request.user.id
+        suggetionfeature = SuggetionFeature.objects.filter(user__id=userid)
+
+        if (list(suggetionfeature.values())[0]['search_origin_count'] >=
+                list(suggetionfeature.values())[0]['search_des_count']):
+            # print(max(list(suggetionfeature.values(
+            #     'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0]))
+            # print(list(suggetionfeature.values())[0])
+            print(max(list(suggetionfeature.values(
+                'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0]))
+            trip = Trip.objects.filter(origin=Const.city_map[max(list(suggetionfeature.values(
+                'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0])])
+            print(trip)
+        else:
+            trip = Trip.objects.filter(destination=Const.city_map[max(list(suggetionfeature.values(
+                'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0])])
+        serializer = TripSerializer(trip, many=True)
+        return JsonResponse({'res': loads(dumps(serializer.data))},
+                            status=status.HTTP_200_OK)
 
 
 class NotificationHandler(APIView):
