@@ -11,6 +11,7 @@ from django.db.models import Q
 from .serializers import TripSerializer
 from json import loads, dumps
 from search.const import Const
+from user.models import SuggetionFeature
 
 # logger = logging.getLogger(__name__)
 
@@ -79,10 +80,23 @@ class SearchTrips(APIView):
 
         if start_time != '':
             query = query & Q(start_time=start_time)
+
         if origin != '':
             query = query & Q(origin=origin)
+            s = SuggetionFeature.objects.get(user__id=userid)
+            s.search_origin_count += 1
+            setattr(s, Const.shahr_map[origin], getattr(
+                s, Const.shahr_map[origin])+1)
+            s.save()
+
         if destination != '':
             query = query & Q(destination=destination)
+            s = SuggetionFeature.objects.get(user__id=userid)
+            s.search_des_count += 1
+            setattr(s, Const.shahr_map[destination], getattr(
+                s, Const.shahr_map[destination])+1)
+            s.save()
+
         if number_of_passengers != '':
             query = query & Q(number_of_passengers=number_of_passengers)
         query = query & ~Q(user=userid)
