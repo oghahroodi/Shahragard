@@ -8,6 +8,7 @@ from user.models import *
 from user.models import User, Person
 from django.http import JsonResponse
 from .models import RequestTrip, Trip
+from json import loads, dumps
 
 # logger = logging.getLogger(__name__)
 
@@ -89,3 +90,24 @@ class TripHandler(APIView):
         RequestTrip.objects.filter(user=userid, trip=tripid).delete()
         return JsonResponse({'status': 'DELETED'},
                             status=status.HTTP_202_ACCEPTED)
+
+
+class CommentHandler(APIView):
+
+    def post(self, request):
+        tripid = request.data['trip']
+        comment = Comment.objects.filter(trip=tripid)
+        serializer = AllCommentSerializer(list(comment), many=True)
+        resList = loads(dumps(serializer.data))
+        return JsonResponse({"res": resList})
+
+    def put(self, request):
+        userid = self.request.user.id
+        request.data['user'] = userid
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'status': 'CREATED'},
+                                status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
