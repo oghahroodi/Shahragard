@@ -23,3 +23,22 @@ class RequestTripSerializer(serializers.ModelSerializer):
     class Meta:
         model = RequestTrip
         fields = ('user', 'trip', 'number_of_passengers')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment
+        fields = ('user', 'trip', 'text')
+
+
+class AllCommentSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Comment
+        fields = ('user', 'trip', 'text')
+
+    def get_user(self, obj):
+        user = User.objects.get(id=obj.user.id)
+        return user.username
