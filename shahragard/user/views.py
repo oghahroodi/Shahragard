@@ -19,6 +19,7 @@ from rest_framework.permissions import AllowAny
 from trip.models import Trip, RequestTrip
 from user.const import Const
 from search.serializers import TripSerializer
+from django.db.models import Q
 
 # logger = logging.getLogger(__name__)
 
@@ -171,20 +172,19 @@ class SuggestionHandler(APIView):
 
         if (list(suggetionfeature.values())[0]['search_origin_count'] >=
                 list(suggetionfeature.values())[0]['search_des_count']):
-            # print(list(suggetionfeature.values(
-            #     'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0])
             l = list(suggetionfeature.values(
                 'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0]
+            # print(RequestTrip.objects.filter(user=userid).values('trip'))
+            query = Q()
+            for i in list(RequestTrip.objects.filter(user=userid).values('trip')):
+                query = query & Q(id=i['trip'])
             trip = Trip.objects.filter(origin=Const.city_map[max(
-                l.items(), key=operator.itemgetter(1))[0]])
+                l.items(), key=operator.itemgetter(1))[0]]).exclude(user=userid).exclude(query)
         else:
-            pass
-            # trip = Trip.objects.filter(destination=Const.city_map[max(list(suggetionfeature.values(
-            # 'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0])])
             l = list(suggetionfeature.values(
                 'tehran', 'karaj', 'mashhad', 'shiraz', 'qom'))[0]
             trip = Trip.objects.filter(destination=Const.city_map[max(
-                l.items(), key=operator.itemgetter(1))[0]])
+                l.items(), key=operator.itemgetter(1))[0]]).exclude(user=userid)
         serializer = TripSerializer(trip, many=True)
         return JsonResponse({'res': loads(dumps(serializer.data))},
                             status=status.HTTP_200_OK)
