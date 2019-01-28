@@ -23,4 +23,4 @@ class RequestTrip(models.Model):
 class Comment(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.CharField(max_length=50)
+    text = models.CharField(max_length=255)
