@@ -1,12 +1,16 @@
 language: python
+
+service:
+  - redis-server
+
 python:
   - "3.6"
   - "pypy3.5"
 
+
 install:
   - pip install -r requirements
-service:
-  - redis-server
+
 script:
   - python shahragard/manage.py makemigrations
   - python shahragard/manage.py makemigrations user
