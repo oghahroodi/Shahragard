@@ -1,12 +1,18 @@
 language: python
 python:
   - "3.6"
-  # PyPy versions
   - "pypy3.5"
-# command to install dependencies
+
 install:
   - pip install -r requirements
-# command to run tests
+service:
+  - redis-server
 script:
+  - python shahragard/manage.py makemigrations
+  - python shahragard/manage.py makemigrations user
+  - python shahragard/manage.py makemigrations trip
+  - python shahragard/manage.py migrate
+  - python shahragard/manage.py migrate user
+  - python shahragard/manage.py migrate trip
   - python shahragard/manage.py test user
-  # - python shahragard/manage.py test search
+  - python shahragard/manage.py test search
