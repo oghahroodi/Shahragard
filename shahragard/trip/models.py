@@ -16,3 +16,11 @@ class RequestTrip(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     accept = models.BooleanField(default=False)
     number_of_passengers = models.IntegerField(null=False)
+    # origin = models.CharField(max_length=50, null=False)
+    # destination = models.CharField(max_length=50, null=False)
+
+
+class Comment(models.Model):
+    trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.CharField(max_length=255)
